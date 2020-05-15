@@ -14,8 +14,15 @@ import scala.concurrent.duration._
 
 class MMDBServerSimulation extends Simulation {
   val ip = sys.env.getOrElse("MMDB_SERVER_HOST", "localhost")
-  val proto = grpc(managedChannelBuilder(ip, 50000).usePlaintext())
-    .warmUpCall(GeoIpGrpc.METHOD_LOOKUP, Message("126.203.22.11"))
+  val port = sys.env.getOrElse("MMDB_SERVER_PORT", "50000")
+  val proto =
+    grpc(
+      managedChannelBuilder(ip, port.toInt)
+        .keepAliveWithoutCalls(true)
+        .keepAliveTime(10, SECONDS)
+        .keepAliveTimeout(5, SECONDS)
+        .usePlaintext()
+    ).warmUpCall(GeoIpGrpc.METHOD_LOOKUP, Message("126.203.22.11"))
 
   def o = Random.nextInt(224) + 30
   val feeder = Iterator.continually(Map("ip" -> s"$o.$o.$o.$o"))
@@ -35,6 +42,6 @@ class MMDBServerSimulation extends Simulation {
       )
 
   setUp(
-    scn(0).inject(constantConcurrentUsers(10).during(60.seconds))
+    scn(0).inject(constantConcurrentUsers(1).during(60.seconds))
   ).protocols(proto)
 }
