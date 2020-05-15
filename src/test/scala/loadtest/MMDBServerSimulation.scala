@@ -15,16 +15,20 @@ import io.grpc.CallOptions
 
 class MMDBServerSimulation extends Simulation {
   val ip = sys.env.getOrElse("MMDB_SERVER_HOST", "localhost")
-  val port = sys.env.getOrElse("MMDB_SERVER_PORT", "50000")
-  val mcb = managedChannelBuilder(ip, port.toInt).usePlaintext()
-
-  val proto = grpc(mcb).warmUpCall(GeoIpGrpc.METHOD_LOOKUP, Message("126.203.22.11")).shareChannel
+  val port = sys.env.getOrElse("MMDB_SERVER_PORT", "50000").toInt
+  val channels = sys.env.getOrElse("MMDB_PROTO_CHANNELS", "1").toInt
+  val users = sys.env.getOrElse("MMDB_USERS_PER_CHANNEL", "10").toInt
+  val mcb = managedChannelBuilder(ip, port).usePlaintext()
+  val protocols = Iterator
+    .continually(grpc(mcb).warmUpCall(GeoIpGrpc.METHOD_LOOKUP, Message("126.203.22.11")).shareChannel)
+    .take(channels)
+    .toList
 
   def o = Random.nextInt(224) + 30
   val feeder = Iterator.continually(Map("ip" -> s"$o.$o.$o.$o"))
 
-  val scn =
-    scenario(s"mmdb")
+  def scn(i: Int) =
+    scenario(s"mmdb-$i")
       .feed(feeder)
       .exec(
         grpc("lookup")
@@ -37,7 +41,10 @@ class MMDBServerSimulation extends Simulation {
           )
       )
 
-  setUp(
-    scn.inject(constantConcurrentUsers(10).during(60.seconds))
-  ).protocols(proto)
+  setUp(protocols.zipWithIndex.map {
+    case (p, i) =>
+      scn(i)
+        .inject(constantConcurrentUsers(users).during(60.seconds))
+        .protocols(p)
+  })
 }

@@ -9,6 +9,7 @@ scalacOptions := Seq(
   "-deprecation",
   "-feature",
   "-unchecked",
+  "-language:existentials",
   "-language:implicitConversions",
   "-language:postfixOps"
 )
