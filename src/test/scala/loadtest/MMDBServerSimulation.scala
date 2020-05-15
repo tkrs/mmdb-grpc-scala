@@ -11,24 +11,20 @@ import io.grpc.Status
 
 import scala.util.Random
 import scala.concurrent.duration._
+import io.grpc.CallOptions
 
 class MMDBServerSimulation extends Simulation {
   val ip = sys.env.getOrElse("MMDB_SERVER_HOST", "localhost")
   val port = sys.env.getOrElse("MMDB_SERVER_PORT", "50000")
-  val proto =
-    grpc(
-      managedChannelBuilder(ip, port.toInt)
-        .keepAliveWithoutCalls(true)
-        .keepAliveTime(10, SECONDS)
-        .keepAliveTimeout(5, SECONDS)
-        .usePlaintext()
-    ).warmUpCall(GeoIpGrpc.METHOD_LOOKUP, Message("126.203.22.11"))
+  val mcb = managedChannelBuilder(ip, port.toInt).usePlaintext()
+
+  val proto = grpc(mcb).warmUpCall(GeoIpGrpc.METHOD_LOOKUP, Message("126.203.22.11")).shareChannel
 
   def o = Random.nextInt(224) + 30
   val feeder = Iterator.continually(Map("ip" -> s"$o.$o.$o.$o"))
 
-  def scn(i: Int) =
-    scenario(s"mmdb-$i")
+  val scn =
+    scenario(s"mmdb")
       .feed(feeder)
       .exec(
         grpc("lookup")
@@ -42,6 +38,6 @@ class MMDBServerSimulation extends Simulation {
       )
 
   setUp(
-    scn(0).inject(constantConcurrentUsers(1).during(60.seconds))
+    scn.inject(constantConcurrentUsers(10).during(60.seconds))
   ).protocols(proto)
 }
