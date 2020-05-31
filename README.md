@@ -1,1 +1,1 @@
-# mmdb-grpc-gatling
+# mmdb-grpc-scala

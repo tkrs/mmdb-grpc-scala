@@ -1,11 +1,15 @@
-name := "mmdb-grpc-gatling"
-version := "0.1.0"
-enablePlugins(GatlingPlugin)
-scalaVersion := "2.12.10"
-scalacOptions := Seq(
+import Dependencies._
+
+name := "mmdb-grpc-scala"
+ThisBuild / scalaVersion := V.`scala2.12`
+ThisBuild / crossScalaVersions := Seq(
+  V.`scala2.12`,
+  V.`scala2.13`
+)
+
+ThisBuild / scalacOptions := Seq(
   "-encoding",
   "UTF-8",
-  "-target:jvm-1.8",
   "-deprecation",
   "-feature",
   "-unchecked",
@@ -13,16 +17,64 @@ scalacOptions := Seq(
   "-language:implicitConversions",
   "-language:postfixOps"
 )
-libraryDependencies ++= Seq(
-  "io.grpc" % "grpc-netty" % scalapb.compiler.Version.grpcJavaVersion,
-  "com.thesamet.scalapb" %% "scalapb-runtime-grpc" % scalapb.compiler.Version.scalapbVersion,
-  "io.gatling.highcharts" % "gatling-charts-highcharts" % "3.3.1" % "test",
-  "io.gatling" % "gatling-test-framework" % "3.3.1" % "test",
-  "com.github.phisgr" %% "gatling-grpc" % "0.8.2" % "test"
+
+ThisBuild / scalafmtOnCompile := true
+
+lazy val publishSettings = Seq(
+  releaseCrossBuild := true,
+  releasePublishArtifactsAction := PgpKeys.publishSigned.value,
+  homepage := Some(url("https://github.com/tkrs/mmdb-grpc-scala")),
+  licenses := Seq("MIT License" -> url("http://www.opensource.org/licenses/mit-license.php")),
+  publishMavenStyle := true,
+  Test / publishArtifact := false,
+  pomIncludeRepository := (_ => false),
+  publishTo := {
+    val nexus = "https://oss.sonatype.org/"
+    if (isSnapshot.value)
+      Some("snapshots".at(nexus + "content/repositories/snapshots"))
+    else
+      Some("releases".at(nexus + "service/local/staging/deploy/maven2"))
+  },
+  scmInfo := Some(
+    ScmInfo(
+      url("https://github.com/tkrs/mess"),
+      "scm:git:git@github.com:tkrs/mess.git"
+    )
+  ),
+  pomExtra :=
+    <developers>
+      <developer>
+        <id>tkrs</id>
+        <name>Takeru Sato</name>
+        <url>https://github.com/tkrs</url>
+      </developer>
+    </developers>
 )
 
-logLevel := Level.Warn
-
-PB.targets in Compile := Seq(
-  scalapb.gen() -> (sourceManaged in Compile).value
+lazy val noPublishSettings = Seq(
+  publish / skip := true
 )
+
+lazy val root = project
+  .in(file("."))
+  .dependsOn(core)
+  .aggregate(core)
+
+lazy val core = project
+  .in(file("modules/core"))
+  .settings(
+    moduleName := "mmdb-grpc-core",
+    libraryDependencies ++= Seq(GrpcNetty, ScalaPBRuntimeGrpc),
+    Compile / PB.targets := Seq(
+      scalapb.gen() -> (Compile / sourceManaged).value
+    )
+  )
+
+lazy val gatling = project
+  .in(file("modules/gatling"))
+  .enablePlugins(GatlingPlugin)
+  .settings(
+    moduleName := "mmdb-grpc-gatling",
+    libraryDependencies ++= Seq(GatlingCharts, GatlingTest, GatlingGrpc)
+  )
+  .dependsOn(core)
