@@ -1,6 +1,7 @@
 import Dependencies._
 
 name := "mmdb-grpc-scala"
+ThisBuild / organization := "com.github.tkrs"
 ThisBuild / scalaVersion := V.`scala2.12`
 ThisBuild / crossScalaVersions := Seq(
   V.`scala2.12`,
