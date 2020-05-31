@@ -58,6 +58,7 @@ lazy val noPublishSettings = Seq(
 
 lazy val root = project
   .in(file("."))
+  .settings(publishSettings)
   .settings(noPublishSettings)
   .dependsOn(core)
   .aggregate(core)
