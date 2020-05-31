@@ -1,0 +1,4 @@
+[submodule "protobuf"]
+	path = modules/core/src/main/protobuf
+	url = https://github.com/tkrs/mmdb-protobuf.git
+	branch = release-v1.0.0
