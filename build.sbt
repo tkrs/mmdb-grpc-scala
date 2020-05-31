@@ -37,8 +37,8 @@ lazy val publishSettings = Seq(
   },
   scmInfo := Some(
     ScmInfo(
-      url("https://github.com/tkrs/mess"),
-      "scm:git:git@github.com:tkrs/mess.git"
+      url("https://github.com/tkrs/mmdb-grpc-scala"),
+      "scm:git:git@github.com:tkrs/mmdb-grpc-scala.git"
     )
   ),
   pomExtra :=
@@ -57,11 +57,13 @@ lazy val noPublishSettings = Seq(
 
 lazy val root = project
   .in(file("."))
+  .settings(noPublishSettings)
   .dependsOn(core)
   .aggregate(core)
 
 lazy val core = project
   .in(file("modules/core"))
+  .settings(publishSettings)
   .settings(
     moduleName := "mmdb-grpc-core",
     libraryDependencies ++= Seq(GrpcNetty, ScalaPBRuntimeGrpc),
@@ -72,6 +74,7 @@ lazy val core = project
 
 lazy val gatling = project
   .in(file("modules/gatling"))
+  .settings(noPublishSettings)
   .enablePlugins(GatlingPlugin)
   .settings(
     moduleName := "mmdb-grpc-gatling",
