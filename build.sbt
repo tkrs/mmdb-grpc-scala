@@ -1,6 +1,7 @@
 import Dependencies._
 
 name := "mmdb-grpc-scala"
+description := "The gRPC service for Scala that provides a query to MaxMind's GeoLite2 database"
 ThisBuild / organization := "com.github.tkrs"
 ThisBuild / scalaVersion := V.`scala2.12`
 ThisBuild / crossScalaVersions := Seq(
