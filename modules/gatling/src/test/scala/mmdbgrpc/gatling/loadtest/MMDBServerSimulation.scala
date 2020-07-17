@@ -15,7 +15,7 @@ class MMDBServerSimulation extends Simulation {
   val ip       = sys.env.getOrElse("MMDB_SERVER_HOST", "localhost")
   val port     = sys.env.getOrElse("MMDB_SERVER_PORT", "50000").toInt
   val mcb      = managedChannelBuilder(ip, port).usePlaintext()
-  val protocol = grpc(mcb).shareChannel
+  def protocol = grpc(mcb).shareChannel
 
   def o      = Random.nextInt(224) + 30
   val feeder = Iterator.continually(Map("ip" -> s"$o.$o.$o.$o"))
@@ -35,12 +35,20 @@ class MMDBServerSimulation extends Simulation {
       )
 
   setUp(
-    scn("default")
+    scn("demo1")
       .inject(
-        rampConcurrentUsers(1).to(1000).during(30.seconds),
-        constantConcurrentUsers(1000).during(180.seconds),
-        rampConcurrentUsers(1000).to(10).during(30.seconds),
-        constantConcurrentUsers(10).during(180.seconds)
+        nothingFor(4.seconds),
+        atOnceUsers(10),
+        rampUsers(10).during(5.seconds),
+        constantUsersPerSec(20).during(15.seconds),
+        rampUsersPerSec(10).to(20).during(10.seconds),
+        heavisideUsers(1000).during(20.seconds)
+      )
+      .protocols(protocol),
+    scn("demo2")
+      .inject(
+        constantUsersPerSec(20).during(15.seconds).randomized,
+        rampUsersPerSec(10).to(20).during(10.seconds).randomized
       )
       .protocols(protocol)
   )
