@@ -6,7 +6,7 @@ object Dependencies {
     val `scala2.13` = "2.13.3"
 
     val gatling     = "3.3.1"
-    val gatlingGrpc = "0.8.2"
+    val gatlingGrpc = "0.10.1"
   }
 
   lazy val ScalaPBRuntimeGrpc =
