@@ -1,15 +1,69 @@
 import Dependencies._
 
-name := "mmdb-grpc-scala"
-description := "The gRPC service for Scala that provides a query to MaxMind's GeoLite2 database"
-ThisBuild / organization := "com.github.tkrs"
-ThisBuild / scalaVersion := V.`scala2.12`
-ThisBuild / crossScalaVersions := Seq(
-  V.`scala2.12`,
-  V.`scala2.13`
-)
+lazy val root = project
+  .in(file("."))
+  .settings(
+    name := "mmdb-grpc-scala",
+    description := "The gRPC service for Scala that provides a query to MaxMind's GeoLite2 database"
+  )
+  .settings(
+    inThisBuild(
+      Seq(
+        organization := "com.github.tkrs",
+        homepage := Some(url("https://github.com/tkrs/mmdb-grpc-scala")),
+        licenses := Seq("MIT License" -> url("http://www.opensource.org/licenses/mit-license.php")),
+        developers := List(
+          Developer(
+            "tkrs",
+            "Takeru Sato",
+            "type.in.type@gmail.com",
+            url("https://github.com/tkrs")
+          )
+        ),
+        scalaVersion := V.`scala2.12`,
+        crossScalaVersions := Seq(V.`scala2.12`, V.`scala2.13`),
+        scalacOptions ++= compilerOptions ++ {
+          CrossVersion.partialVersion(scalaVersion.value) match {
+            case Some((2, n)) if n >= 13 => Nil
+            case _                       => Seq("-Xfuture")
+          }
+        },
+        fork := true,
+        scalafmtOnCompile := true,
+        scalafixOnCompile := true,
+        scalafixDependencies += OrganizeImports,
+        semanticdbEnabled := true,
+        semanticdbVersion := scalafixSemanticdb.revision
+      )
+    )
+  )
+  .settings(publish / skip := true)
+  .dependsOn(core)
+  .aggregate(core)
 
-ThisBuild / scalacOptions := Seq(
+lazy val core = project
+  .in(file("modules/core"))
+  .settings(
+    moduleName := "mmdb-grpc-core",
+    libraryDependencies ++= Seq(GrpcNetty, ScalaPBRuntimeGrpc),
+    Compile / PB.targets := Seq(scalapb.gen() -> (Compile / sourceManaged).value)
+  )
+
+lazy val gatling = project
+  .in(file("modules/gatling"))
+  .settings(
+    scalaVersion := V.`scala2.12`,
+    crossScalaVersions := Seq(V.`scala2.12`)
+  )
+  .settings(publish / skip := true)
+  .enablePlugins(GatlingPlugin)
+  .settings(
+    moduleName := "mmdb-grpc-gatling",
+    libraryDependencies ++= Seq(GatlingCharts, GatlingTest, GatlingGrpc)
+  )
+  .dependsOn(core)
+
+lazy val compilerOptions = Seq(
   "-encoding",
   "UTF-8",
   "-deprecation",
@@ -19,68 +73,3 @@ ThisBuild / scalacOptions := Seq(
   "-language:implicitConversions",
   "-language:postfixOps"
 )
-
-ThisBuild / scalafmtOnCompile := true
-
-lazy val publishSettings = Seq(
-  releaseCrossBuild := true,
-  releasePublishArtifactsAction := PgpKeys.publishSigned.value,
-  homepage := Some(url("https://github.com/tkrs/mmdb-grpc-scala")),
-  licenses := Seq("MIT License" -> url("http://www.opensource.org/licenses/mit-license.php")),
-  publishMavenStyle := true,
-  Test / publishArtifact := false,
-  pomIncludeRepository := (_ => false),
-  publishTo := {
-    val nexus = "https://oss.sonatype.org/"
-    if (isSnapshot.value)
-      Some("snapshots".at(nexus + "content/repositories/snapshots"))
-    else
-      Some("releases".at(nexus + "service/local/staging/deploy/maven2"))
-  },
-  scmInfo := Some(
-    ScmInfo(
-      url("https://github.com/tkrs/mmdb-grpc-scala"),
-      "scm:git:git@github.com:tkrs/mmdb-grpc-scala.git"
-    )
-  ),
-  pomExtra :=
-    <developers>
-      <developer>
-        <id>tkrs</id>
-        <name>Takeru Sato</name>
-        <url>https://github.com/tkrs</url>
-      </developer>
-    </developers>
-)
-
-lazy val noPublishSettings = Seq(
-  publish / skip := true
-)
-
-lazy val root = project
-  .in(file("."))
-  .settings(publishSettings)
-  .settings(noPublishSettings)
-  .dependsOn(core)
-  .aggregate(core)
-
-lazy val core = project
-  .in(file("modules/core"))
-  .settings(publishSettings)
-  .settings(
-    moduleName := "mmdb-grpc-core",
-    libraryDependencies ++= Seq(GrpcNetty, ScalaPBRuntimeGrpc),
-    Compile / PB.targets := Seq(
-      scalapb.gen() -> (Compile / sourceManaged).value
-    )
-  )
-
-lazy val gatling = project
-  .in(file("modules/gatling"))
-  .settings(noPublishSettings)
-  .enablePlugins(GatlingPlugin)
-  .settings(
-    moduleName := "mmdb-grpc-gatling",
-    libraryDependencies ++= Seq(GatlingCharts, GatlingTest, GatlingGrpc)
-  )
-  .dependsOn(core)

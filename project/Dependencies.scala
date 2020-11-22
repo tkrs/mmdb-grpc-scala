@@ -8,6 +8,7 @@ object Dependencies {
     val gatling     = "3.3.1"
     val gatlingGrpc = "0.10.1"
   }
+  lazy val OrganizeImports = "com.github.liancheng" %% "organize-imports" % "0.4.4"
 
   lazy val ScalaPBRuntimeGrpc =
     "com.thesamet.scalapb" %% "scalapb-runtime-grpc" % scalapb.compiler.Version.scalapbVersion
