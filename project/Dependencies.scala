@@ -2,8 +2,8 @@ import sbt._
 
 object Dependencies {
   val V = new {
-    val `scala2.12` = "2.12.12"
-    val `scala2.13` = "2.13.3"
+    val `scala2.12` = "2.12.15"
+    val `scala2.13` = "2.13.8"
 
     val gatling     = "3.7.6"
     val gatlingGrpc = "0.12.0"

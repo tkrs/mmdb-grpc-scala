@@ -3,15 +3,15 @@ import Dependencies._
 lazy val root = project
   .in(file("."))
   .settings(
-    name := "mmdb-grpc-scala",
+    name        := "mmdb-grpc-scala",
     description := "The gRPC service for Scala that provides a query to MaxMind's GeoLite2 database"
   )
   .settings(
     inThisBuild(
       Seq(
         organization := "com.github.tkrs",
-        homepage := Some(url("https://github.com/tkrs/mmdb-grpc-scala")),
-        licenses := Seq("MIT License" -> url("http://www.opensource.org/licenses/mit-license.php")),
+        homepage     := Some(url("https://github.com/tkrs/mmdb-grpc-scala")),
+        licenses     := Seq("MIT License" -> url("http://www.opensource.org/licenses/mit-license.php")),
         developers := List(
           Developer(
             "tkrs",
@@ -20,15 +20,10 @@ lazy val root = project
             url("https://github.com/tkrs")
           )
         ),
-        scalaVersion := V.`scala2.12`,
+        scalaVersion       := V.`scala2.13`,
         crossScalaVersions := Seq(V.`scala2.12`, V.`scala2.13`),
-        scalacOptions ++= compilerOptions ++ {
-          CrossVersion.partialVersion(scalaVersion.value) match {
-            case Some((2, n)) if n >= 13 => Nil
-            case _                       => Seq("-Xfuture")
-          }
-        },
-        fork := true,
+        scalacOptions ++= compilerOptions,
+        fork              := true,
         scalafmtOnCompile := true,
         scalafixOnCompile := true,
         scalafixDependencies += OrganizeImports,
@@ -52,7 +47,7 @@ lazy val core = project
 lazy val gatling = project
   .in(file("modules/gatling"))
   .settings(
-    scalaVersion := V.`scala2.12`,
+    scalaVersion       := V.`scala2.12`,
     crossScalaVersions := Seq(V.`scala2.12`)
   )
   .settings(publish / skip := true)
