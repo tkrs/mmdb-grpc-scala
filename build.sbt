@@ -21,7 +21,7 @@ lazy val root = project
           )
         ),
         scalaVersion       := V.`scala2.13`,
-        crossScalaVersions := Seq(V.`scala2.12`, V.`scala2.13`),
+        crossScalaVersions := Seq(V.`scala2.12`, V.`scala2.13`, V.scala3),
         scalacOptions ++= compilerOptions,
         fork              := true,
         scalafmtOnCompile := true,
