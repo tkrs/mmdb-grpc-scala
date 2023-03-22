@@ -40,7 +40,7 @@ lazy val core = project
   .in(file("modules/core"))
   .settings(
     moduleName := "mmdb-grpc-core",
-    libraryDependencies ++= Seq(GrpcNetty, ScalaPBRuntimeGrpc),
+    libraryDependencies ++= Seq(GrpcNetty, ScalaPBRuntimeGrpc, Munit),
     Compile / PB.targets := Seq(scalapb.gen() -> (Compile / sourceManaged).value)
   )
 
