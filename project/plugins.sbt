@@ -1,4 +1,4 @@
-addSbtPlugin("io.gatling"     % "gatling-sbt"    % "4.3.2")
+addSbtPlugin("io.gatling"     % "gatling-sbt"    % "4.3.3")
 addSbtPlugin("com.thesamet"   % "sbt-protoc"     % "1.0.6")
 addSbtPlugin("org.scalameta"  % "sbt-scalafmt"   % "2.5.0")
 addSbtPlugin("ch.epfl.scala"  % "sbt-scalafix"   % "0.11.0")
