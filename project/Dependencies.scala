@@ -6,8 +6,8 @@ object Dependencies {
     val `scala2.13` = "2.13.12"
     val scala3      = "3.3.1"
 
-    val gatling     = "3.7.6"
-    val gatlingGrpc = "0.12.0"
+    val gatling     = "3.9.5"
+    val gatlingGrpc = "0.16.0"
   }
   lazy val OrganizeImports = "com.github.liancheng" %% "organize-imports" % "0.6.0"
 
@@ -17,5 +17,5 @@ object Dependencies {
   lazy val GrpcNetty = "io.grpc"        % "grpc-netty" % scalapb.compiler.Version.grpcJavaVersion
   lazy val GatlingCharts = "io.gatling.highcharts" % "gatling-charts-highcharts" % V.gatling     % Test
   lazy val GatlingTest   = "io.gatling"            % "gatling-test-framework"    % V.gatling     % Test
-  lazy val GatlingGrpc   = "com.github.phisgr"    %% "gatling-grpc"              % V.gatlingGrpc % Test
+  lazy val GatlingGrpc   = "com.github.phisgr"     % "gatling-grpc"              % V.gatlingGrpc % Test
 }
