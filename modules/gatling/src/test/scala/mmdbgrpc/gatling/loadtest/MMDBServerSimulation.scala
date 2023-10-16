@@ -42,7 +42,7 @@ class MMDBServerSimulation extends Simulation {
         rampUsers(10).during(5.seconds),
         constantUsersPerSec(20).during(15.seconds),
         rampUsersPerSec(10).to(20).during(10.seconds),
-        heavisideUsers(1000).during(20.seconds)
+        stressPeakUsers(1000).during(20.seconds)
       )
       .protocols(protocol),
     scn("demo2")
