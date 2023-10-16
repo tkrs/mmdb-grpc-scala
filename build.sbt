@@ -47,8 +47,8 @@ lazy val core = project
 lazy val gatling = project
   .in(file("modules/gatling"))
   .settings(
-    scalaVersion       := V.`scala2.12`,
-    crossScalaVersions := Seq(V.`scala2.12`)
+    scalaVersion       := V.`scala2.13`,
+    crossScalaVersions := Seq(V.`scala2.13`)
   )
   .settings(publish / skip := true)
   .enablePlugins(GatlingPlugin)
