@@ -13,4 +13,4 @@ project/plugins/project/
 .cache
 .lib/
 
-
+*.mmdb

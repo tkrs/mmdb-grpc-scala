@@ -48,7 +48,7 @@ class MMDBServerSimulation extends Simulation {
     scn("demo2")
       .inject(
         constantUsersPerSec(20).during(15.seconds).randomized,
-        rampUsersPerSec(10).to(20).during(10.seconds).randomized
+        rampUsersPerSec(10).to(1000).during(20.seconds).randomized
       )
       .protocols(protocol)
   )

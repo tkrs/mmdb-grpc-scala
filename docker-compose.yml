@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  mmdb-server:
+    image: ghcr.io/tkrs/mmdb-server:v0.5.8
+    command:
+      - "--host"
+      - "0.0.0.0"
+    volumes:
+      - ./GeoLite2-City.mmdb:/usr/share/GeoIP/GeoLite2-City.mmdb
+    environment:
+      RUST_LOG: debug
+      RUST_BACKTRACE: "1"
+    networks:
+      - mmdb
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+  envoy:
+    image: envoyproxy/envoy:v1.27.1
+    ports:
+      - 50000:50000
+      - 9901:9901
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml
+    networks:
+      - mmdb
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+
+networks:
+  mmdb:
