@@ -8,8 +8,8 @@ import io.gatling.core.Predef._
 import io.gatling.core.Predef.{stringToExpression => _, _}
 import io.gatling.core.session.Expression
 
-import scala.util.Random
 import scala.concurrent.duration._
+import scala.util.Random
 
 class MMDBServerSimulation extends Simulation {
   val ip       = sys.env.getOrElse("MMDB_SERVER_HOST", "localhost")
