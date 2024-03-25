@@ -4,7 +4,7 @@ object Dependencies {
   val V = new {
     val `scala2.12` = "2.12.18"
     val `scala2.13` = "2.13.12"
-    val scala3      = "3.3.1"
+    val scala3      = "3.3.3"
 
     val gatling     = "3.9.5"
     val gatlingGrpc = "0.16.0"
