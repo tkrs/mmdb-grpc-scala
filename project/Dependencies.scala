@@ -13,7 +13,7 @@ object Dependencies {
 
   lazy val ScalaPBRuntimeGrpc =
     "com.thesamet.scalapb" %% "scalapb-runtime-grpc" % scalapb.compiler.Version.scalapbVersion
-  lazy val Munit     = "org.scalameta" %% "munit"      % "0.7.29" % Test
+  lazy val Munit     = "org.scalameta" %% "munit"      % "1.0.0" % Test
   lazy val GrpcNetty = "io.grpc"        % "grpc-netty" % scalapb.compiler.Version.grpcJavaVersion
   lazy val GatlingCharts = "io.gatling.highcharts" % "gatling-charts-highcharts" % V.gatling     % Test
   lazy val GatlingTest   = "io.gatling"            % "gatling-test-framework"    % V.gatling     % Test
