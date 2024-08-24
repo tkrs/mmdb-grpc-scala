@@ -12,9 +12,11 @@ jobs:
   enable-auto-merge:
     name: enable-auto-merge
     runs-on: ubuntu-latest
-    if: github.actor == 'dependabot[bot]' || startsWith(github.ref_name, 'update/')
     steps:
       - uses: actions/checkout@v4
+      - run: echo "ref_name: ${{ github.ref_name }}"
+      - run: echo "actor: ${{ github.actor }}"
       - run: gh pr merge --auto --merge ${{github.event.number}}
+        if: ${{ github.actor == 'dependabot[bot]' || startsWith(github.ref_name, 'update/') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
