@@ -14,9 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: show context
-        run: |
-          echo ${{ fromJson(github) }}
       - name: show ref
         run: |
           echo ${{ github.ref }}
