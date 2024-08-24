@@ -14,22 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: show ref
-        run: |
-          echo ${{ github.ref }}
-      - name: show head_ref
-        run: |
-          echo ${{ github.head_ref }}
-      - name: show ref_name
-        run: |
-          echo ${{ github.ref_name }}
-      - name: show base_ref
-        run: |
-          echo ${{ github.base_ref }}
-      - name: show actor
-        run: |
-          echo ${{ github.actor }}
       - run: gh pr merge --auto --merge ${{github.event.number}}
-        if: ${{ github.actor == 'dependabot[bot]' || startsWith(github.ref_name, 'update/') }}
+        if: ${{ github.actor == 'dependabot[bot]' || startsWith(github.head_ref, 'update/') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
