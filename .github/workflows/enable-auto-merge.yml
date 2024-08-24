@@ -17,6 +17,9 @@ jobs:
       - name: show ref
         run: |
           echo ${{ github.ref }}
+      - name: show head_ref
+        run: |
+          echo ${{ github.head_ref }}
       - name: show ref_name
         run: |
           echo ${{ github.ref_name }}
